@@ -1,26 +1,16 @@
-package com.group14.ecommerce;
+package com.group14.ecommerce.Vo;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Data;
 import java.util.*;
 
 @Data
+@Entity
 public class User {
-  private String name;
+  @Id
   private String email;
   private String password;
-  // private Cart cart = new ArrayList<Product>();
-  // private ArrayList<Cart> orderHistory = new ArrayList<Cart>();
-
-  private static ArrayList<User> allUsers = new ArrayList<User>();
-
-  // public void addToCart(Product product) {
-  //   cart.add(product);
-  // }
-  // public void removeFromCart(Product product) {
-  //   cart.remove(product);
-  // }
-  // public void checkout() {
-  //   orderHistory.add(cart);
-  //   cart = new ArrayList<Product>();
-  // }
+  private String name;
+  private double totalSpent;
 }
