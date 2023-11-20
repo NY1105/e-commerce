@@ -6,22 +6,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-import com.group14.ecommerce.Repository.userRepository;
-import com.group14.ecommerce.Vo.User;
+import com.group14.ecommerce.Repository.cartRepository;
+import com.group14.ecommerce.Vo.Cart;
 
 
 @RestController
-public class userController {
-    @Autowired
-    private userRepository user_repository;
+public class cartController {
 
-    @GetMapping("/")
+    @Autowired
+    private cartRepository cart_repository;
+
+    @GetMapping("/cart")
     public String test(){
         return("this is a test");
     }
 
-    @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return user_repository.findAll();
+    @GetMapping("/carts")
+    public List<Cart> getAllCarts() {
+        return cart_repository.findAll();
     }
 }
