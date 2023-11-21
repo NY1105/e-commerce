@@ -11,6 +11,5 @@ public class User {
   @Id
   private String email;
   private String password;
-  private String name;
   private double totalSpent;
 }

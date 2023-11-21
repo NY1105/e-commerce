@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Product {
   @Id
-  private String product_id;
+  private String productId;
   private double price;
   private int stock;
 }
