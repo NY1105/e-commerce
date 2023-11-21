@@ -12,8 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Discount {
   @Id
-  private long id;
-  private boolean condition = false;
+  private long discount_code;
   private double discountPercentOff = 0;
   private double discountAmount = 0;
 }
