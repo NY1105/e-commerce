@@ -16,11 +16,6 @@ public class cartController {
     @Autowired
     private cartRepository cart_repository;
 
-    @GetMapping("/cart")
-    public String test(){
-        return("this is a test");
-    }
-
     @GetMapping("/carts")
     public List<Cart> getAllCarts() {
         return cart_repository.findAll();

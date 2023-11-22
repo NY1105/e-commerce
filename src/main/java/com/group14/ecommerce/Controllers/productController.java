@@ -15,11 +15,7 @@ public class productController {
 
     @Autowired
     private productRepository product_repository;
-
-    @GetMapping("/product")
-    public String test(){
-        return("this is a test");
-    }
+    
 
     @GetMapping("/products")
     public List<Product> getAllProducts() {

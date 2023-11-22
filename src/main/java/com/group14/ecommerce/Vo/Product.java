@@ -14,5 +14,5 @@ public class Product {
   @Id
   private String productId;
   private double price;
-  private int stock;
+  private int inventory;
 }
