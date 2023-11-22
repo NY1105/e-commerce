@@ -1,6 +1,8 @@
 package com.group14.ecommerce.Controllers;
 
 import java.util.*;
+
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,4 +23,11 @@ public class productController {
     public List<Product> getAllProducts() {
         return product_repository.findAll();
     }
+
+    @GetMapping("/product")
+    public Product getOneProduct(@RequestParam Long productId){
+        return product_repository.getReferenceById(productId);
+    }
+
+
 }
