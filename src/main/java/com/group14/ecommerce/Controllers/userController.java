@@ -2,10 +2,11 @@ package com.group14.ecommerce.Controllers;
 
 import java.util.*;
 
-import com.group14.ecommerce.Vo.Product;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.group14.ecommerce.Service.userService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -18,9 +19,12 @@ public class userController {
     @Autowired
     private userRepository user_repository;
 
+    @Autowired
+    private userService user_service;
+
     @GetMapping("/")
-    public String test(){
-        return("this is a test");
+    public String index(){
+        return("redirect:/swagger-ui/index.html#/");
     }
 
     @GetMapping("/users")
@@ -28,10 +32,16 @@ public class userController {
         return user_repository.findAll();
     }
 
-    @GetMapping("/users")
-    public User getOneProduct(@RequestParam Long userId) {
-        return user_repository.getReferenceById(userId);
+    @GetMapping("/user/login")
+    public ResponseEntity<User> getOneUser(@RequestBody User user) {
+        Optional<User> authed_user = user_service.auth(user);
+        return authed_user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
     }
 
-    
+    @PostMapping(path = "/user/register",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public User register(@RequestBody User user) {
+        return user_service.register(user);
+    }
 }

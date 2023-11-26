@@ -2,10 +2,11 @@ package com.group14.ecommerce.Controllers;
 
 import java.util.*;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.group14.ecommerce.Vo.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -29,12 +30,28 @@ public class cartController {
     }
 
     @GetMapping("/cart")
-    public Cart getCartById(@RequestParam Long cartId){
-        return cart_repository.getReferenceById(cartId);
+    public Optional<Cart> getCartById(@RequestParam Long cartId){
+        return cart_repository.findById(cartId);
     }
 
     @GetMapping("/cart/total")
     public double getCartTotal(@RequestParam Long cartId){
         return cart_service.getTotalPrice(cartId);
     }
+
+    @PostMapping("/cart")
+    public Cart getNewCart() {
+        Cart new_cart = new Cart();
+        return cart_repository.saveAndFlush(new_cart);
+    }
+
+    @PostMapping(path = "/checkout", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> checkout(@RequestParam Long cartId, @RequestBody User user) {
+        double total_paid = cart_service.checkout(cartId, user);
+        if (total_paid > 0)
+            return new ResponseEntity<String>("Paid: "+ total_paid, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }
