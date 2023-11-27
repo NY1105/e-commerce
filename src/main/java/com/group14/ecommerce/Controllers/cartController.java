@@ -30,27 +30,31 @@ public class cartController {
     }
 
     @GetMapping("/cart")
-    public Optional<Cart> getCartById(@RequestParam Long cartId){
-        return cart_repository.findById(cartId);
+    public Optional<Cart> getCartById(@RequestParam(required = false) Long cartId){
+        if (cartId != null) 
+            return cart_repository.findById(cartId);
+        Optional<Cart> cart = Optional.of(new Cart());
+        return Optional.of(cart_repository.saveAndFlush(cart.get()));
     }
 
     @GetMapping("/cart/total")
-    public double getCartTotal(@RequestParam Long cartId){
-        return cart_service.getTotalPrice(cartId);
+    public ResponseEntity<Double> getCartTotal(@RequestParam Long cartId){
+        Optional<Cart> cart = cart_repository.findById(cartId);
+        return cart.map(value -> new ResponseEntity<>(cart_service.getTotalPrice(value), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<Double>(HttpStatus.BAD_REQUEST));
     }
-
     @PostMapping("/cart")
-    public Cart getNewCart() {
-        Cart new_cart = new Cart();
-        return cart_repository.saveAndFlush(new_cart);
+    public ResponseEntity<Cart> addNewProducts(@RequestParam long cartId, @RequestBody long[] productIds){
+        Optional<Cart> cart = cart_repository.findById(cartId);
+        return cart.map(value -> new ResponseEntity<>(cart_service.addNewProductsToCart(value, productIds), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
-
     @PostMapping(path = "/checkout", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> checkout(@RequestParam Long cartId, @RequestBody User user) {
         double total_paid = cart_service.checkout(cartId, user);
         if (total_paid > 0)
             return new ResponseEntity<String>("Paid: "+ total_paid, HttpStatus.OK);
+        if (total_paid == -1)
+            return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

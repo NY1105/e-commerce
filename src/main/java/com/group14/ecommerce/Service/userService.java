@@ -12,7 +12,7 @@ import java.util.Optional;
 public class userService {
     private final userRepository user_repository;
     public userService(userRepository userRepository) {
-        this.user_repository = userRepository;
+        user_repository = userRepository;
     }
 
     public User register(User newUser){

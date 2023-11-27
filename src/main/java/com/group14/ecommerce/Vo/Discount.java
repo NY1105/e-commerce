@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
+@Inheritance
 public class Discount {
   @Id
   private long discountCode;
