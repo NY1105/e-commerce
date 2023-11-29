@@ -28,11 +28,12 @@ public class userController {
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return user_repository.findAll();
+    public List<User> getAllUsers(@RequestBody String masterKey) {
+        if (masterKey.equals("MASTER_KEY")) return user_repository.findAll();
+        return Collections.emptyList();
     }
 
-    @GetMapping("/user/login")
+    @PostMapping("/user/login")
     public ResponseEntity<User> getOneUser(@RequestBody User user) {
         Optional<User> authed_user = user_service.auth(user);
         return authed_user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.UNAUTHORIZED));

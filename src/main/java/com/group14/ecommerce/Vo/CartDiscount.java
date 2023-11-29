@@ -15,4 +15,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("cart")
 public class CartDiscount extends Discount{
     private int itemsInCart;
+
+    public CartDiscount(int i, int i1, double v, int i2) {
+    }
 }

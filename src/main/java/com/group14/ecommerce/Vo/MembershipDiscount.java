@@ -15,4 +15,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("membership")
 public class MembershipDiscount extends Discount {
     private int membershipTier;
+
+    public MembershipDiscount(int i, int i1, int i2, int i3) {
+    }
 }
