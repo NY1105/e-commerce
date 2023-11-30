@@ -161,23 +161,31 @@ class UserControllerTests {
     }
 
     @Test
-    public void postUserRegisterToUnregisteredID() throws Exception {
+    public void postUserRegisterToUnregisteredIDWithBadPassword() throws Exception {
         String str = "{\"userId\":\"user123\",\"userPassword\":\"pass123\"}";
         MvcResult result_0 = mockMvc.perform(
-                        MockMvcRequestBuilders.request(HttpMethod.POST, "/user/login")
+                        MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str)
                 )
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
     }
 
     @Test
-    public void postUserRegisterToRegisteredIDWithBadPassword() throws Exception {
-        String str = "{\"userId\":\"user123\",\"userPassword\":\"pass123\"}";
+    public void postUserRegisterToRegisteredID() throws Exception {
+        String str_1 = "{\"userId\":\"user123\",\"userPassword\":\"pass456\"}";
+        MvcResult result_1 = mockMvc.perform(
+                        MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
+                                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str_1)
+                )
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+        String str_0 = "{\"userId\":\"user123\",\"userPassword\":\"pass123\"}";
         MvcResult result_0 = mockMvc.perform(
-                        MockMvcRequestBuilders.request(HttpMethod.POST, "/user/login")
-                                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str)
+                        MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
+                                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str_0)
                 )
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
