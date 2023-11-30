@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 public class MembershipDiscount extends Discount {
     private int membershipTier;
 
-    public MembershipDiscount(int i, int i1, int i2, int i3) {
+    public MembershipDiscount(double discountPercentOff, double discountAmount, int membershipTier) {
+        super(discountPercentOff,discountAmount);
+        setMembershipTier(membershipTier);
     }
 }

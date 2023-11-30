@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 public class CartDiscount extends Discount{
     private int itemsInCart;
 
-    public CartDiscount(int i, int i1, double v, int i2) {
+    public CartDiscount(double discountPercentOff, double discountAmount, int itemsInCart) {
+        super(discountPercentOff,discountAmount);
+        setItemsInCart(itemsInCart);
     }
 }

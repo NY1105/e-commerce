@@ -3,9 +3,7 @@ package com.group14.ecommerce.Controllers;
 import com.group14.ecommerce.Repository.discountRepository;
 import com.group14.ecommerce.Vo.Discount;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,8 +11,12 @@ import java.util.List;
 public class discountController {
     @Autowired
     private discountRepository discount_repository;
-    @PostMapping("/discounts")
+    @PutMapping("/discounts")
     public void addNewDiscount(@RequestBody List<Discount> discounts){
         discount_repository.saveAllAndFlush(discounts);
+    }
+    @GetMapping("/discounts")
+    public List<Discount> getDiscounts(){
+        return discount_repository.findAll();
     }
 }

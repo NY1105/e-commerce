@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,34 +32,13 @@ class ECommerceApplicationTests {
 	private WebApplicationContext wac;
 	private MockMvc mockMvc;
 
-	@BeforeAll
-	static void init() throws Exception {
-		MockMvc mockMvcS = MockMvcBuilders.standaloneSetup(new ECommerceApplication()).build();
-		Object discounts = List.of(
-				new CartDiscount(1, 0, 0.1, 1),
-				new CartDiscount(2, 0, 0.2, 2),
-				new CartDiscount(3, 0, 0.3, 3),
-				new CartDiscount(4, 0, 0.4, 4),
-				new CartDiscount(5, 0, 0.5, 5),
-				new MembershipDiscount(6, 100, 0, 1),
-				new MembershipDiscount(7, 200, 0, 2),
-				new MembershipDiscount(8, 300, 0, 3)
-		);
-		mockMvcS.perform(
-				MockMvcRequestBuilders.request(HttpMethod.POST, "/discounts")
-						.contentType("application/json").content(asJsonString(discounts))
-						.accept(MediaType.APPLICATION_JSON))
-				.andReturn();
-		Object user = new User("1234","123456");
-		mockMvcS.perform(
-						MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
-								.contentType("application/json").content(asJsonString(user))
-								.accept(MediaType.APPLICATION_JSON))
-				.andReturn();
-	}
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+	}
+	@BeforeEach
+	void clearDatabase(@Autowired JdbcTemplate jdbcTemplate) {
+		JdbcTestUtils.dropTables(jdbcTemplate, "cart", "discount", "product", "user");
 	}
 	@Test
 	public void getProducts() throws Exception {

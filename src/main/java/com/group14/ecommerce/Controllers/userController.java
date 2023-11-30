@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.group14.ecommerce.Repository.userRepository;
 import com.group14.ecommerce.Vo.User;
+import org.springframework.web.servlet.view.RedirectView;
 
 
 @RestController
@@ -23,8 +24,8 @@ public class userController {
     private userService user_service;
 
     @GetMapping("/")
-    public String index(){
-        return("redirect:/swagger-ui/index.html#/");
+    public RedirectView index(){
+        return new RedirectView("/swagger-ui/index.html#/");
     }
 
     @GetMapping("/users")

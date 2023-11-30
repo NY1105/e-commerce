@@ -25,8 +25,9 @@ public class cartController {
     private cartService cart_service;
 
     @GetMapping("/carts")
-    public List<Cart> getAllCarts() {
-        return cart_repository.findAll();
+    public List<Cart> getAllCarts(@RequestBody String masterKey) {
+        if (masterKey.equals("MASTER_KEY")) return cart_repository.findAll();
+        return Collections.emptyList();
     }
 
     @GetMapping("/cart")
@@ -43,7 +44,7 @@ public class cartController {
         return cart.map(value -> new ResponseEntity<>(cart_service.getTotalPrice(value), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<Double>(HttpStatus.BAD_REQUEST));
     }
     @PostMapping("/cart")
-    public ResponseEntity<Cart> addNewProducts(@RequestParam long cartId, @RequestBody long[] productIds){
+    public ResponseEntity<Cart> addNewProducts(@RequestParam long cartId, @RequestBody String[] productIds){
         Optional<Cart> cart = cart_repository.findById(cartId);
         return cart.map(value -> new ResponseEntity<>(cart_service.addNewProductsToCart(value, productIds), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }

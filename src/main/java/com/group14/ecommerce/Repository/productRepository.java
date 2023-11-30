@@ -8,6 +8,6 @@ import com.group14.ecommerce.Vo.*;
 
 
 @Repository
-public interface productRepository extends JpaRepository<Product, Long> {
+public interface productRepository extends JpaRepository<Product, String> {
 
 }

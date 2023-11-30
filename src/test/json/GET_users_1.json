@@ -1,0 +1,9 @@
+[
+	{
+		"userId": "user123",
+		"userPassword": "pass456",
+		"totalSpent": 0.0,
+		"carts": null,
+		"membershipTier": 0
+	}
+]

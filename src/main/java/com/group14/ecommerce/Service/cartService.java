@@ -71,9 +71,9 @@ public class cartService {
         return total;
     }
 
-    public Cart addNewProductsToCart(Cart cart, long[] productIds) {
+    public Cart addNewProductsToCart(Cart cart, String[] productIds) {
         List<Product> products = new ArrayList<>(Collections.emptyList());
-        for (long p : productIds){
+        for (String p : productIds){
             Optional<Product> product = product_repository.findById(p);
             if (product.isEmpty())
                 continue;
