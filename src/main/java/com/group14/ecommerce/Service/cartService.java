@@ -1,10 +1,12 @@
 package com.group14.ecommerce.Service;
 
+import com.group14.ecommerce.Exceptions.CartNotFoundException;
 import com.group14.ecommerce.Repository.cartRepository;
 import com.group14.ecommerce.Repository.discountRepository;
 import com.group14.ecommerce.Repository.productRepository;
 import com.group14.ecommerce.Repository.userRepository;
 import com.group14.ecommerce.Vo.*;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,6 +42,22 @@ public class cartService {
         }
         return total;
     }
+
+    public List<Cart> findAll(){
+        return cart_repository.findAll();
+    }
+
+    public Cart findById(Long cartId) throws CartNotFoundException {
+        Optional<Cart> cart = cart_repository.findById(cartId);
+        if (cart.isPresent())
+            return cart.get();
+        throw new CartNotFoundException();
+    }
+
+    public Cart saveAndFlush(Cart cart){
+        return cart_repository.saveAndFlush(cart);
+    }
+
 
 
     public double getDiscountedTotalPrice(Cart cart, User user){
@@ -80,6 +98,6 @@ public class cartService {
             products.add(product.get());
         }
         cart.setProducts(products);
-        return cart_repository.saveAndFlush(cart);
+        return cart_repository.save(cart);
     }
 }
