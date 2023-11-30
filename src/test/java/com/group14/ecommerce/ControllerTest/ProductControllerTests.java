@@ -44,7 +44,7 @@ class ProductControllerTests {
 
     @BeforeEach
     void setUp() {
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
 
@@ -137,7 +137,7 @@ class ProductControllerTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String responseJson = result_0.getResponse().getContentAsString();
-        List<String> jsonArray = read(responseJson, "$");
+            List<String> jsonArray = read(responseJson, "$");
         assert jsonArray.toString().equals("{\"productId\":\"1\",\"price\":20.0,\"inventory\":10}");
     }
 
