@@ -1,27 +1,22 @@
 package com.group14.ecommerce.Controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
-
-
 import com.group14.ecommerce.Repository.discountRepository;
 import com.group14.ecommerce.Vo.Discount;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class discountController {
-
     @Autowired
     private discountRepository discount_repository;
-
-    @GetMapping("/discount")
-    public String test(){
-        return("this is a test");
+    @PutMapping("/discounts")
+    public void addNewDiscount(@RequestBody List<Discount> discounts){
+        discount_repository.saveAllAndFlush(discounts);
     }
-
     @GetMapping("/discounts")
-    public List<Discount> getAllDiscounts() {
+    public List<Discount> getDiscounts(){
         return discount_repository.findAll();
     }
 }

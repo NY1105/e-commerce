@@ -14,7 +14,7 @@ import java.util.*;
 public class Cart {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private long cart_id;
+  private long cartId;
   @OneToMany
   private List<Product> products;
 }

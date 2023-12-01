@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import com.group14.ecommerce.Vo.*;
 
 @Repository
-public interface userRepository extends JpaRepository<User, Long> {
+public interface userRepository extends JpaRepository<User, String> {
 
 }

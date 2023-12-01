@@ -7,12 +7,17 @@ import lombok.NoArgsConstructor;
 
 
 @Data
+@Entity
+@Inheritance
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class Discount {
   @Id
-  private long discount_code;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long discountCode;
   private double discountPercentOff = 0;
   private double discountAmount = 0;
+
+  public Discount(double discountPercentOff, double discountAmount) {
+  }
 }
