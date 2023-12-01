@@ -47,11 +47,14 @@ public class cartService {
         return cart_repository.findAll();
     }
 
-    public Cart findById(Long cartId) throws CartNotFoundException {
+    public Optional<Cart> findById(Long cartId) {
         Optional<Cart> cart = cart_repository.findById(cartId);
         if (cart.isPresent())
-            return cart.get();
-        throw new CartNotFoundException();
+            return Optional.of(cart.get());
+        else{
+            Optional<Cart> new_cart = Optional.of(new Cart());
+            return Optional.of(cart_repository.saveAndFlush(new_cart.get()));
+        }
     }
 
     public Cart saveAndFlush(Cart cart){
