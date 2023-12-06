@@ -1,4 +1,4 @@
-package com.group14.ecommerce;
+package com.group14.ecommerce.ControllerTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group14.ecommerce.Vo.*;

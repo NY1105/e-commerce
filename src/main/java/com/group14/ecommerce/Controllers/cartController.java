@@ -32,7 +32,7 @@ public class cartController {
     }
 
     @GetMapping("/cart/total")
-    public ResponseEntity<Double> getCartTotal(@RequestParam Long cartId) throws CartNotFoundException{
+    public ResponseEntity<Double> getCartTotal(@RequestParam long cartId) throws CartNotFoundException{
         Cart cart = cart_service.findById(cartId);
 //      return cart.map(value -> new ResponseEntity<>(cart_service.getTotalPrice(value), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<Double>(HttpStatus.BAD_REQUEST));
         return new ResponseEntity<>(cart_service.getTotalPrice(cart), HttpStatus.OK);

@@ -1,6 +1,5 @@
 package com.group14.ecommerce.Service;
 
-import com.group14.ecommerce.Exceptions.CartNotFoundException;
 import com.group14.ecommerce.Repository.cartRepository;
 import com.group14.ecommerce.Repository.discountRepository;
 import com.group14.ecommerce.Repository.productRepository;
@@ -47,14 +46,13 @@ public class cartService {
         return cart_repository.findAll();
     }
 
-    public Optional<Cart> findById(Long cartId) {
+    public Cart findById(Long cartId) {
         Optional<Cart> cart = cart_repository.findById(cartId);
         if (cart.isPresent())
-            return Optional.of(cart.get());
-        else{
-            Optional<Cart> new_cart = Optional.of(new Cart());
-            return Optional.of(cart_repository.saveAndFlush(new_cart.get()));
-        }
+            return cart.get();
+        Cart new_cart = new Cart();
+        cart_repository.saveAndFlush(new_cart);
+        return new_cart;
     }
 
     public Cart saveAndFlush(Cart cart){
