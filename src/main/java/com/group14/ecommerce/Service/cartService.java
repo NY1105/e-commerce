@@ -1,6 +1,5 @@
 package com.group14.ecommerce.Service;
 
-import com.group14.ecommerce.Exceptions.CartNotFoundException;
 import com.group14.ecommerce.Repository.cartRepository;
 import com.group14.ecommerce.Repository.discountRepository;
 import com.group14.ecommerce.Repository.productRepository;
@@ -34,8 +33,8 @@ public class cartService {
     }
 
 
-    public double getTotalPrice(Cart cart){
-        List<Product> productList = cart.getProducts();
+    public double getTotalPrice(Optional<Cart> cart){
+        List<Product> productList = cart.get().getProducts();
         double total = 0;
         for (Product p : productList) {        
             total += p.getPrice();
@@ -61,7 +60,7 @@ public class cartService {
 
 
     public double getDiscountedTotalPrice(Cart cart, User user){
-        double total = getTotalPrice(cart);
+        double total = getTotalPrice(Optional.of(cart));
         Optional<Discount> cart_discount = discount_repository.findByCount(cart.getProducts().size());
         Optional<Discount> membership_discount = discount_repository.findByTier(cart.getProducts().size());
         if (cart_discount.isPresent())
@@ -89,7 +88,11 @@ public class cartService {
         return total;
     }
 
+<<<<<<< Updated upstream
     public Cart addNewProductsToCart(Cart cart, long[] productIds) {
+=======
+    public Cart addNewProductsToCart(Optional<Cart> cart, String[] productIds) {
+>>>>>>> Stashed changes
         List<Product> products = new ArrayList<>(Collections.emptyList());
         for (long p : productIds){
             Optional<Product> product = product_repository.findById(p);
@@ -97,7 +100,7 @@ public class cartService {
                 continue;
             products.add(product.get());
         }
-        cart.setProducts(products);
-        return cart_repository.save(cart);
+        cart.get().setProducts(products);
+        return cart_repository.save(cart.get());
     }
 }

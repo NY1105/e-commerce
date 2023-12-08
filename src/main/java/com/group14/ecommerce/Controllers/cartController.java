@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.group14.ecommerce.Vo.Cart;
 import com.group14.ecommerce.Service.cartService;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 public class cartController {
 
@@ -23,21 +27,21 @@ public class cartController {
     }
 
     @GetMapping("/cart")
-    public ResponseEntity<?> getCartById(@RequestParam(required = false) Long cartId) throws CartNotFoundException {
-        return new ResponseEntity<>(cart_service.findById(cartId), HttpStatus.OK);
+    public Optional<Cart> getCartById(@RequestParam(required = false) Long cartId) throws CartNotFoundException {
+        return cart_service.findById(cartId);
     }
 
     @GetMapping("/cart/total")
-    public ResponseEntity<Double> getCartTotal(@RequestParam Long cartId) throws CartNotFoundException{
-        Cart cart = cart_service.findById(cartId);
+    public Double getCartTotal(@RequestParam Long cartId) throws CartNotFoundException{
+        Optional<Cart> cart = cart_service.findById(cartId);
 //      return cart.map(value -> new ResponseEntity<>(cart_service.getTotalPrice(value), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<Double>(HttpStatus.BAD_REQUEST));
-        return new ResponseEntity<>(cart_service.getTotalPrice(cart), HttpStatus.OK);
+        return cart_service.getTotalPrice(cart);
     }
     @PostMapping("/cart")
-    public ResponseEntity<Cart> addNewProducts(@RequestParam long cartId, @RequestBody long[] productIds) throws CartNotFoundException{
-        Cart cart = cart_service.findById(cartId);
+    public Cart addNewProducts(@RequestParam long cartId, @RequestBody String[] productIds) throws CartNotFoundException{
+        Optional<Cart> cart = cart_service.findById(cartId);
 //      return cart.map(value -> new ResponseEntity<>(cart_service.addNewProductsToCart(value, productIds), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
-        return new ResponseEntity<>(cart_service.addNewProductsToCart(cart, productIds), HttpStatus.OK);
+        return cart_service.addNewProductsToCart(cart, productIds);
     }
     @PostMapping(path = "/checkout", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
