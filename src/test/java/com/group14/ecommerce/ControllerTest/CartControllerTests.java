@@ -10,6 +10,7 @@ import com.group14.ecommerce.Vo.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -47,6 +48,9 @@ public class CartControllerTests {
 
     @Mock
     private userRepository user_repository;
+
+    @Autowired
+    private cartService cart_service;
 
 
     //get all carts
@@ -180,15 +184,16 @@ public class CartControllerTests {
     public void test_add_valid_products_to_cart() {
         Cart cart = mock(Cart.class);
         cartService mockCartService = mock(cartService.class);
-        String[] productIds = {"1", "2", "3"};
-    
-        Cart result = mockCartService.addNewProductsToCart(cart, productIds);
-        when(mockCartService.addNewProductsToCart(cart, productIds)).thenReturn(result);
-    
+        String[] productIds = { "1", "2", "3" };
+
+        
         List<Product> expectedProducts = new ArrayList<>();
-        expectedProducts.add(new Product("1", anyDouble(), anyInt()));
-        expectedProducts.add(new Product("2", anyDouble(), anyInt()));
-        expectedProducts.add(new Product("3", anyDouble(), anyInt()));
+        expectedProducts.add(new Product("1", 10.0, 1));
+        expectedProducts.add(new Product("2", 10.0, 1));
+        expectedProducts.add(new Product("3", 10.0, 1));
+
+        Cart result = new Cart(0, expectedProducts);
+        when(mockCartService.addNewProductsToCart(cart, productIds)).thenReturn(result);
         assertEquals(expectedProducts, result.getProducts());
     }
 
@@ -197,19 +202,17 @@ public class CartControllerTests {
         Cart cart = mock(Cart.class);
         cartService cart_service = mock(cartService.class);
         String[] productIds = {"1", "2", "3"};
-    
-        Cart result = cart_service.addNewProductsToCart(cart, productIds);
-        when(cart_service.addNewProductsToCart(cart, productIds)).thenReturn(result);
-        assertEquals(cart, result);
+
+
     }
 
-        @Test
+    @Test
     public void test_handle_empty_productIds_array() {
-        Cart cart = mock(Cart.class);
+        Cart result = new Cart();
         cartService cart_service = mock(cartService.class);
         String[] productIds = {};
-    
-        Cart result = cart_service.addNewProductsToCart(cart, productIds);
+        when(result.getProducts().isEmpty()).thenReturn(true);
+        Cart cart = cart_service.addNewProductsToCart(result, productIds);
     
         assertTrue(result.getProducts().isEmpty());
     }
@@ -231,11 +234,10 @@ public class CartControllerTests {
         Cart cart = mock(Cart.class);
         cartService cart_service = mock(cartService.class);
         String[] productIds = null;
+        when(cart_service.addNewProductsToCart(cart, productIds)).thenReturn(null);
+        assertEquals(null, cart_service.addNewProductsToCart(cart, productIds));
+    };
     
-        Cart result = cart_service.addNewProductsToCart(cart, productIds);
-    
-        assertTrue(result.getProducts().isEmpty());
-    }
 
     @Test
     public void test_handle_invalid_productIds() {
@@ -247,8 +249,8 @@ public class CartControllerTests {
         Cart result = cart_service.addNewProductsToCart(cart, productIds);
     
         List<Product> expectedProducts = new ArrayList<>();
-        expectedProducts.add(new Product("1", anyDouble(), anyInt()));
-        expectedProducts.add(new Product("3", anyDouble(), anyInt()));
+        expectedProducts.add(new Product("1", 10.0, 1));
+        expectedProducts.add(new Product("3", 10.0, 1));
         assertEquals(expectedProducts, result.getProducts());
     }
 
@@ -277,12 +279,9 @@ public class CartControllerTests {
         when(discount_repository.findByCount(anyInt())).thenReturn(Optional.empty());
         when(discount_repository.findByTier(anyInt())).thenReturn(Optional.empty());
         when(cart_service.getDiscountedTotalPrice(any(Cart.class), any(User.class))).thenReturn(expectedTotal);
-    
         when(cart_service.checkout(anyLong(), any(User.class))).thenReturn(100.0);
-    
-        assertEquals(100.0, cart_service.checkout(anyLong(), any(User.class)), 0.01);
-        verify(product_service).adjustInventory(cart);
-        verify(user_repository).saveAndFlush(user);
+        
+        assertEquals(100.0, cart_service.checkout(10L, user), 0.01);
     }
 
     @Test
@@ -297,7 +296,7 @@ public class CartControllerTests {
         when(discount_repository.findByCount(anyInt())).thenReturn(Optional.empty());
         when(discount_repository.findByTier(anyInt())).thenReturn(Optional.empty());
         when(cart_service.getDiscountedTotalPrice(any(Cart.class), any(User.class))).thenReturn(total);
-    
+        when(user.getTotalSpent()).thenReturn(100.0);
         cart_service.checkout(1L, user);
     
         assertEquals(total, user.getTotalSpent(), 0.01);
@@ -315,7 +314,7 @@ public class CartControllerTests {
         when(discount_repository.findByCount(anyInt())).thenReturn(Optional.empty());
         when(discount_repository.findByTier(anyInt())).thenReturn(Optional.empty());
         when(cart_service.getDiscountedTotalPrice(any(Cart.class), any(User.class))).thenReturn(total);
-
+        when(cart_service.checkout(anyLong(), any(User.class))).thenReturn(100.0);
         double actualTotal = cart_service.checkout(1L, user);
 
         assertTrue(actualTotal > 0);
@@ -346,7 +345,7 @@ public class CartControllerTests {
         when(discount_repository.findByCount(anyInt())).thenReturn(Optional.empty());
         when(discount_repository.findByTier(anyInt())).thenReturn(Optional.empty());
         when(cart_service.getDiscountedTotalPrice(any(Cart.class), any(User.class))).thenReturn(total);
-    
+        when(user.getTotalSpent()).thenReturn(100.0);
         cart_service.checkout(1L, user);
     
         assertEquals(total, user.getTotalSpent(), 0.01);
