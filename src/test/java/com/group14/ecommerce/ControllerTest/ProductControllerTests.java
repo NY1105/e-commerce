@@ -147,9 +147,23 @@ class ProductControllerTests {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType("application/json").content(asJsonString(obj)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
     }
+
+    // TEST: POST /product
+    @Test
+    public void postProductToAddNegativeInventoryProduct() throws Exception {
+        Object obj = new Product("1",20,-1);
+        MvcResult result = mockMvc.perform(
+                        MockMvcRequestBuilders.request(HttpMethod.POST, "/product")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType("application/json").content(asJsonString(obj)))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+    }
+
     // TEST: POST /product
     @Test
     public void postProductToAddOtherNewProduct() throws Exception {
@@ -159,7 +173,7 @@ class ProductControllerTests {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType("application/json").content(asJsonString(obj)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
     }
     @Test
@@ -174,7 +188,7 @@ class ProductControllerTests {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType("application/json").content(asJsonString(obj)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
     }
     

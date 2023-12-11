@@ -59,7 +59,7 @@ class UserControllerTests {
 
     @Test
     public void getUsersToListAllAfterAddingOneUser() throws Exception {
-        Object obj = new User("user123","pass456");
+        Object obj = new User("user123","Pass456!");
         MvcResult result_1 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(asJsonString(obj))
@@ -76,7 +76,7 @@ class UserControllerTests {
                 .andReturn();
         String responseJson = result_0.getResponse().getContentAsString();
         List<String> jsonArray = read(responseJson, "$");
-        assert jsonArray.toString().equals("[{\"userId\":\"user123\",\"userPassword\":\"pass456\",\"totalSpent\":0.0,\"carts\":[],\"membershipTier\":0}]");
+        assert jsonArray.toString().equals("[{\"userId\":\"user123\",\"userPassword\":\"Pass456!\",\"totalSpent\":0.0,\"carts\":[],\"membershipTier\":0}]");
     }
 
     @Test
@@ -121,7 +121,7 @@ class UserControllerTests {
 
     @Test
     public void postUserLoginToRegisteredID() throws Exception {
-        String str = "{\"userId\":\"user123\",\"userPassword\":\"pass123\"}";
+        String str = "{\"userId\":\"user123\",\"userPassword\":\"Pass123!\"}";
         MvcResult result_1 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str)
@@ -139,7 +139,7 @@ class UserControllerTests {
 
     @Test
     public void postUserLoginToRegisteredIDWithWrongPassword() throws Exception {
-        String str_1 = "{\"userId\":\"user123\",\"userPassword\":\"pass456\"}";
+        String str_1 = "{\"userId\":\"user123\",\"userPassword\":\"Pass456!\"}";
         MvcResult result_1 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str_1)

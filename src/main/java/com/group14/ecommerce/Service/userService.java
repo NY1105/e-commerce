@@ -14,10 +14,16 @@ public class userService {
     public userService(userRepository userRepository) {
         user_repository = userRepository;
     }
-
-    public User register(User newUser){
-        User user = user_repository.saveAndFlush(newUser);
-        return new ResponseEntity<>(user, HttpStatus.CREATED).getBody();
+    private boolean isValidPassword(String password) {
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).+$";
+        return password.matches(regex);
+    }
+    public ResponseEntity<User> register(User newUser) {
+      if (!isValidPassword(newUser.getUserPassword())) {
+        return ResponseEntity.badRequest().build();
+      }
+      User user = user_repository.saveAndFlush(newUser);
+      return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     public Optional<User> auth(User user){

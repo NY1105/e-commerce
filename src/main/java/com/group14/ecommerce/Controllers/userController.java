@@ -43,7 +43,7 @@ public class userController {
     @PostMapping(path = "/user/register",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public User register(@RequestBody User user) {
+    public ResponseEntity<User> register(@RequestBody User user) {
         return user_service.register(user);
     }
 }

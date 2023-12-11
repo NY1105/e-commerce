@@ -77,17 +77,30 @@ public class cartService {
     }
 
     public double checkout(Long cartId, User user) {
-        Optional<User> authed_user = user_service.auth(user);
-        if (authed_user.isEmpty())
-            return -1;
-        Optional<Cart> cart = cart_repository.findById(cartId);
-        if (cart.isEmpty())
-            return 0;
-        double total = getDiscountedTotalPrice(cart.get(), authed_user.get());
-        product_service.adjustInventory(cart.get());
-        authed_user.get().setTotalSpent(authed_user.get().getTotalSpent()+total);
-        user_repository.saveAndFlush(authed_user.get());
-        return total;
+      Optional<User> authed_user = user_service.auth(user);
+      
+      if (authed_user.isEmpty())
+        return -1;
+      Optional<Cart> cart = cart_repository.findById(cartId);
+      if (cart.isEmpty())
+        return 0;
+      double total = getDiscountedTotalPrice(cart.get(), authed_user.get());
+      product_service.adjustInventory(cart.get());
+      if (!isInventoryAvailable(cart.get())) {
+        return -1; // or any other error code to indicate insufficient inventory
+      }
+      authed_user.get().setTotalSpent(authed_user.get().getTotalSpent()+total);
+      user_repository.saveAndFlush(authed_user.get());
+      return total;
+    }
+
+    private boolean isInventoryAvailable(Cart cart) {
+      for (Product product : cart.getProducts()) {
+        if (product.getInventory() < 0) {
+          return false;
+        }
+      }
+      return true;
     }
 
     public Cart addNewProductsToCart(Cart cart, String[] productIds) {

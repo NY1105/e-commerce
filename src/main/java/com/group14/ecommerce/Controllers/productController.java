@@ -2,6 +2,7 @@ package com.group14.ecommerce.Controllers;
 
 import java.util.*;
 
+import com.group14.ecommerce.Service.productService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,12 @@ public class productController {
 
     @Autowired
     private productRepository product_repository;
-    
+    private final productService productService;
+
+    public productController(com.group14.ecommerce.Service.productService productService) {
+        this.productService = productService;
+    }
+
 
     @GetMapping("/products")
     public List<Product> getAllProducts() {
@@ -32,12 +38,12 @@ public class productController {
     }
 
     @PostMapping(value = "/product", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Product newProduct(@RequestBody Product product){
-        return product_repository.saveAndFlush(product);
+    public ResponseEntity<Product> newProduct(@RequestBody Product product){
+        return productService.addProduct(product);
     }
 
     @PostMapping(value = "/products", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Product> newProducts(@RequestBody List<Product> products){
-        return product_repository.saveAllAndFlush(products);
+    public ResponseEntity<List<Product>> newProducts(@RequestBody List<Product> products){
+        return productService.addProducts(products);
     }
 }
