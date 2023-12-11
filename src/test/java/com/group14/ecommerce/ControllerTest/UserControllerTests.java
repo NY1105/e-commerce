@@ -170,21 +170,21 @@ class UserControllerTests {
 
     @Test
     public void postUserRegisterToRegisteredID() throws Exception {
-        String str_1 = "{\"userId\":\"user123\",\"userPassword\":\"pass456\"}";
+        String str_1 = "{\"userId\":\"user123\",\"userPassword\":\"Pass456!\"}";
         MvcResult result_1 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str_1)
                 )
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
-        String str_0 = "{\"userId\":\"user123\",\"userPassword\":\"pass123\"}";
+        String str_0 = "{\"userId\":\"user123\",\"userPassword\":\"!Pass123\"}";
         MvcResult result_0 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str_0)
                 )
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isConflict())
                 .andReturn();
         
     }

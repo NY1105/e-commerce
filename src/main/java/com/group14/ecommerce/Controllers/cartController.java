@@ -27,7 +27,7 @@ public class cartController {
     }
 
     @GetMapping("/cart")
-    public Cart getCartById(@RequestParam(required = false) Long cartId) throws CartNotFoundException {
+    public Cart getCartById(@RequestParam(required = false) long cartId) throws CartNotFoundException {
         return cart_service.findById(cartId);
     }
 
@@ -48,7 +48,7 @@ public class cartController {
     public ResponseEntity<String> checkout(@RequestParam Long cartId, @RequestBody User user) {
         double total_paid = cart_service.checkout(cartId, user);
         if (total_paid > 0)
-            return new ResponseEntity<>("Paid: " + total_paid, HttpStatus.OK);
+            return new ResponseEntity<>("{\"paid\": " + total_paid + "}", HttpStatus.OK);
         if (total_paid == -1)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

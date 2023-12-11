@@ -22,6 +22,10 @@ public class userService {
       if (!isValidPassword(newUser.getUserPassword())) {
         return ResponseEntity.badRequest().build();
       }
+      Optional<User> existingUser = user_repository.findById(newUser.getUserId());
+      if (existingUser.isPresent()) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+      }
       User user = user_repository.saveAndFlush(newUser);
       return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
