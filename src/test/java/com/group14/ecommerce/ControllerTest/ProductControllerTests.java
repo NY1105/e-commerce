@@ -133,8 +133,9 @@ class ProductControllerTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String responseJson = result_0.getResponse().getContentAsString();
-            List<String> jsonArray = read(responseJson, "$");
-        assert jsonArray.toString().equals("{\"productId\":\"1\",\"price\":20.0,\"inventory\":10}");
+        assert responseJson.equals("{\"productId\":\"1\",\"price\":20.0,\"inventory\":10}");
+//        List<String> jsonArray = read(responseJson, "$");
+//        assert jsonArray.toString().equals("{\"productId\":\"1\",\"price\":20.0,\"inventory\":10}");
     }
 
     // TEST: POST /product

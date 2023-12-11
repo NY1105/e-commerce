@@ -15,9 +15,9 @@ public class Discount {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long discountCode;
-  private double discountPercentOff = 0;
-  private double discountAmount = 0;
-
+  private double discountPercentOff;
+  private double discountAmount;
+  
   public Discount(double discountPercentOff, double discountAmount) {
   }
 }
