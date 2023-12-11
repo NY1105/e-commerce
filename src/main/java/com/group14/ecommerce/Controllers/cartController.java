@@ -27,28 +27,28 @@ public class cartController {
     }
 
     @GetMapping("/cart")
-    public ResponseEntity<?> getCartById(@RequestParam(required = false) Long cartId) throws CartNotFoundException {
-        return new ResponseEntity<>(cart_service.findById(cartId), HttpStatus.OK);
+    public Cart getCartById(@RequestParam(required = false) long cartId) throws CartNotFoundException {
+        return cart_service.findById(cartId);
     }
 
     @GetMapping("/cart/total")
-    public ResponseEntity<Double> getCartTotal(@RequestParam Long cartId) throws CartNotFoundException{
+    public Double getCartTotal(@RequestParam long cartId) throws CartNotFoundException{
         Cart cart = cart_service.findById(cartId);
 //      return cart.map(value -> new ResponseEntity<>(cart_service.getTotalPrice(value), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<Double>(HttpStatus.BAD_REQUEST));
-        return new ResponseEntity<>(cart_service.getTotalPrice(cart), HttpStatus.OK);
+        return cart_service.getTotalPrice(cart);
     }
     @PostMapping("/cart")
-    public ResponseEntity<Cart> addNewProducts(@RequestParam long cartId, @RequestBody String[] productIds) throws CartNotFoundException{
+    public Cart addNewProducts(@RequestParam long cartId, @RequestBody String[] productIds) throws CartNotFoundException{
         Cart cart = cart_service.findById(cartId);
 //      return cart.map(value -> new ResponseEntity<>(cart_service.addNewProductsToCart(value, productIds), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
-        return new ResponseEntity<>(cart_service.addNewProductsToCart(cart, productIds), HttpStatus.OK);
+        return cart_service.addNewProductsToCart(cart, productIds);
     }
     @PostMapping(path = "/checkout", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> checkout(@RequestParam Long cartId, @RequestBody User user) {
         double total_paid = cart_service.checkout(cartId, user);
         if (total_paid > 0)
-            return new ResponseEntity<>("Paid: " + total_paid, HttpStatus.OK);
+            return new ResponseEntity<>("{\"paid\": " + total_paid + "}", HttpStatus.OK);
         if (total_paid == -1)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

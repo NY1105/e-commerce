@@ -1,18 +1,14 @@
-package com.group14.ecommerce;
+package com.group14.ecommerce.ControllerTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group14.ecommerce.Vo.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -63,7 +59,7 @@ class UserControllerTests {
 
     @Test
     public void getUsersToListAllAfterAddingOneUser() throws Exception {
-        Object obj = new User("user123","pass456");
+        Object obj = new User("user123","Pass456!");
         MvcResult result_1 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(asJsonString(obj))
@@ -80,7 +76,7 @@ class UserControllerTests {
                 .andReturn();
         String responseJson = result_0.getResponse().getContentAsString();
         List<String> jsonArray = read(responseJson, "$");
-        assert jsonArray.toString().equals("[{\"userId\":\"user123\",\"userPassword\":\"pass456\",\"totalSpent\":0.0,\"carts\":[],\"membershipTier\":0}]");
+        assert jsonArray.toString().equals("[{\"userId\":\"user123\",\"userPassword\":\"Pass456!\",\"totalSpent\":0.0,\"carts\":[],\"membershipTier\":0}]");
     }
 
     @Test
@@ -125,7 +121,7 @@ class UserControllerTests {
 
     @Test
     public void postUserLoginToRegisteredID() throws Exception {
-        String str = "{\"userId\":\"user123\",\"userPassword\":\"pass123\"}";
+        String str = "{\"userId\":\"user123\",\"userPassword\":\"Pass123!\"}";
         MvcResult result_1 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str)
@@ -143,7 +139,7 @@ class UserControllerTests {
 
     @Test
     public void postUserLoginToRegisteredIDWithWrongPassword() throws Exception {
-        String str_1 = "{\"userId\":\"user123\",\"userPassword\":\"pass456\"}";
+        String str_1 = "{\"userId\":\"user123\",\"userPassword\":\"Pass456!\"}";
         MvcResult result_1 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str_1)
@@ -174,21 +170,21 @@ class UserControllerTests {
 
     @Test
     public void postUserRegisterToRegisteredID() throws Exception {
-        String str_1 = "{\"userId\":\"user123\",\"userPassword\":\"pass456\"}";
+        String str_1 = "{\"userId\":\"user123\",\"userPassword\":\"Pass456!\"}";
         MvcResult result_1 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str_1)
                 )
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
-        String str_0 = "{\"userId\":\"user123\",\"userPassword\":\"pass123\"}";
+        String str_0 = "{\"userId\":\"user123\",\"userPassword\":\"!Pass123\"}";
         MvcResult result_0 = mockMvc.perform(
                         MockMvcRequestBuilders.request(HttpMethod.POST, "/user/register")
                                 .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(str_0)
                 )
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isConflict())
                 .andReturn();
         
     }

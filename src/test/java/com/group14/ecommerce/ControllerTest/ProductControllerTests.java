@@ -1,18 +1,14 @@
-package com.group14.ecommerce;
+package com.group14.ecommerce.ControllerTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group14.ecommerce.Vo.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -137,8 +133,9 @@ class ProductControllerTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
         String responseJson = result_0.getResponse().getContentAsString();
-            List<String> jsonArray = read(responseJson, "$");
-        assert jsonArray.toString().equals("{\"productId\":\"1\",\"price\":20.0,\"inventory\":10}");
+        assert responseJson.equals("{\"productId\":\"1\",\"price\":20.0,\"inventory\":10}");
+//        List<String> jsonArray = read(responseJson, "$");
+//        assert jsonArray.toString().equals("{\"productId\":\"1\",\"price\":20.0,\"inventory\":10}");
     }
 
     // TEST: POST /product
@@ -150,9 +147,23 @@ class ProductControllerTests {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType("application/json").content(asJsonString(obj)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
     }
+
+    // TEST: POST /product
+    @Test
+    public void postProductToAddNegativeInventoryProduct() throws Exception {
+        Object obj = new Product("1",20,-1);
+        MvcResult result = mockMvc.perform(
+                        MockMvcRequestBuilders.request(HttpMethod.POST, "/product")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType("application/json").content(asJsonString(obj)))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+    }
+
     // TEST: POST /product
     @Test
     public void postProductToAddOtherNewProduct() throws Exception {
@@ -162,7 +173,7 @@ class ProductControllerTests {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType("application/json").content(asJsonString(obj)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
     }
     @Test
@@ -177,7 +188,7 @@ class ProductControllerTests {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType("application/json").content(asJsonString(obj)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
     }
     

@@ -1,6 +1,5 @@
 package com.group14.ecommerce.Service;
 
-import com.group14.ecommerce.Exceptions.CartNotFoundException;
 import com.group14.ecommerce.Repository.cartRepository;
 import com.group14.ecommerce.Repository.discountRepository;
 import com.group14.ecommerce.Repository.productRepository;
@@ -47,14 +46,13 @@ public class cartService {
         return cart_repository.findAll();
     }
 
-    public Optional<Cart> findById(Long cartId) {
+    public Cart findById(Long cartId) {
         Optional<Cart> cart = cart_repository.findById(cartId);
         if (cart.isPresent())
-            return Optional.of(cart.get());
-        else{
-            Optional<Cart> new_cart = Optional.of(new Cart());
-            return Optional.of(cart_repository.saveAndFlush(new_cart.get()));
-        }
+            return cart.get();
+        Cart new_cart = new Cart();
+        cart_repository.saveAndFlush(new_cart);
+        return new_cart;
     }
 
     public Cart saveAndFlush(Cart cart){
@@ -79,17 +77,30 @@ public class cartService {
     }
 
     public double checkout(Long cartId, User user) {
-        Optional<User> authed_user = user_service.auth(user);
-        if (authed_user.isEmpty())
-            return -1;
-        Optional<Cart> cart = cart_repository.findById(cartId);
-        if (cart.isEmpty())
-            return 0;
-        double total = getDiscountedTotalPrice(cart.get(), authed_user.get());
-        product_service.adjustInventory(cart.get());
-        authed_user.get().setTotalSpent(authed_user.get().getTotalSpent()+total);
-        user_repository.saveAndFlush(authed_user.get());
-        return total;
+      Optional<User> authed_user = user_service.auth(user);
+      
+      if (authed_user.isEmpty())
+        return -1;
+      Optional<Cart> cart = cart_repository.findById(cartId);
+      if (cart.isEmpty())
+        return 0;
+      double total = getDiscountedTotalPrice(cart.get(), authed_user.get());
+      product_service.adjustInventory(cart.get());
+      if (!isInventoryAvailable(cart.get())) {
+        return -1; // or any other error code to indicate insufficient inventory
+      }
+      authed_user.get().setTotalSpent(authed_user.get().getTotalSpent()+total);
+      user_repository.saveAndFlush(authed_user.get());
+      return total;
+    }
+
+    private boolean isInventoryAvailable(Cart cart) {
+      for (Product product : cart.getProducts()) {
+        if (product.getInventory() < 0) {
+          return false;
+        }
+      }
+      return true;
     }
 
     public Cart addNewProductsToCart(Cart cart, String[] productIds) {
